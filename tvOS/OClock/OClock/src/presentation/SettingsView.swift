@@ -112,3 +112,17 @@ struct SettingsView: View {
         }
     }
 }
+
+#Preview {
+    @Previewable @State var selectedFont: ClockFont = .system
+    @Previewable @State var fontSize: CGFloat = 80
+    @Previewable @State var backgroundColor: Color = .black
+    @Previewable @State var fontColor: Color = .white
+    
+    SettingsView(
+        selectedFont: $selectedFont,
+        fontSize: $fontSize,
+        backgroundColor: $backgroundColor,
+        fontColor: $fontColor
+    )
+}

@@ -35,3 +35,14 @@ struct ClockDisplayView: View {
         return formatter.string(from: currentTime)
     }
 }
+
+#Preview {
+    ClockDisplayView(
+        currentTime: Date(),
+        selectedFont: .system,
+        fontSize: 80,
+        fontColor: .white,
+        onSettingsPressed: {}
+    )
+    .background(Color.black)
+}
