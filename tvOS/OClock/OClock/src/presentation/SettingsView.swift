@@ -10,6 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     @Binding var selectedFont: ClockFont
     @Binding var fontSize: CGFloat
+    @Binding var dateFontSize: CGFloat
     @Binding var backgroundColor: Color
     @Binding var fontColor: Color
     @Environment(\.presentationMode) var presentationMode
@@ -39,9 +40,18 @@ struct SettingsView: View {
                     
                     NavigationLink(destination: FontSizeSelectionView(fontSize: $fontSize)) {
                         HStack {
-                            Text("Font Size")
+                            Text("Time Font Size")
                             Spacer()
                             Text("\(Int(fontSize)) pt")
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    
+                    NavigationLink(destination: FontSizeSelectionView(fontSize: $dateFontSize)) {
+                        HStack {
+                            Text("Date Font Size")
+                            Spacer()
+                            Text("\(Int(dateFontSize)) pt")
                                 .foregroundColor(.secondary)
                         }
                     }
@@ -113,12 +123,14 @@ struct SettingsView: View {
 #Preview {
     @Previewable @State var selectedFont: ClockFont = .system
     @Previewable @State var fontSize: CGFloat = 80
+    @Previewable @State var dateFontSize: CGFloat = 40
     @Previewable @State var backgroundColor: Color = .black
     @Previewable @State var fontColor: Color = .white
     
     SettingsView(
         selectedFont: $selectedFont,
         fontSize: $fontSize,
+        dateFontSize: $dateFontSize,
         backgroundColor: $backgroundColor,
         fontColor: $fontColor
     )

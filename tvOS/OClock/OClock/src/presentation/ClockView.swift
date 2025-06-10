@@ -6,13 +6,15 @@
 //
 
 import SwiftUI
+import Combine
 import UIKit
 
 struct ClockView: View {
     @State private var currentTime = Date()
     @State private var showSettings = false
     @State private var selectedFont: ClockFont = .system
-    @State private var fontSize: CGFloat = 100
+    @State private var fontSize: CGFloat = 180
+    @State private var dateFontSize: CGFloat = 40
     @State private var backgroundColor: Color = .black
     @State private var fontColor: Color = .white
     
@@ -41,6 +43,7 @@ struct ClockView: View {
                 
                 HStack {
                     Spacer()
+
                     Button("⚙") {
                         showSettings.toggle()
                     }
@@ -48,6 +51,14 @@ struct ClockView: View {
                     .foregroundColor(fontColor.opacity(0.3))
                     .padding(.bottom, 50)
                 }
+            }
+
+            VStack {
+                Spacer()
+                Text(formatDate(currentTime))
+                    .font(selectedFont.getFont(size: dateFontSize).weight(.regular))
+                    .foregroundColor(fontColor)
+                    .padding(.bottom, 50)
             }
         }
         .onReceive(timer) { _ in
@@ -63,10 +74,17 @@ struct ClockView: View {
             SettingsView(
                 selectedFont: $selectedFont,
                 fontSize: $fontSize,
+                dateFontSize: $dateFontSize,
                 backgroundColor: $backgroundColor,
                 fontColor: $fontColor
             )
         }
+    }
+    
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy MMMM dd"
+        return formatter.string(from: date)
     }
 }
 

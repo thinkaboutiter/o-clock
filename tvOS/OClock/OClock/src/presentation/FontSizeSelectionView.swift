@@ -13,7 +13,7 @@ struct FontSizeSelectionView: View {
     
     let fontSizes: [CGFloat] = {
         var sizes: [CGFloat] = []
-        for i in 100...600 where i % 50 == 0 {
+        for i in 120...360 where i % 30 == 0 {
             sizes.append(CGFloat(i))
         }
         return sizes
