@@ -12,20 +12,12 @@ struct ClockDisplayView: View {
     let selectedFont: ClockFont
     let fontSize: CGFloat
     let fontColor: Color
-    let onSettingsPressed: () -> Void
     
     var body: some View {
-        VStack(spacing: 40) {
-            Text(timeString)
-                .font(selectedFont.getFont(size: fontSize).weight(.medium))
-                .foregroundColor(fontColor)
-                .monospacedDigit()
-            
-            Button("Settings") {
-                onSettingsPressed()
-            }
-            .foregroundColor(fontColor.opacity(0.7))
-        }
+        Text(timeString)
+            .font(selectedFont.getFont(size: fontSize).weight(.medium))
+            .foregroundColor(fontColor)
+            .monospacedDigit()
     }
     
     private var timeString: String {
@@ -41,8 +33,7 @@ struct ClockDisplayView: View {
         currentTime: Date(),
         selectedFont: .system,
         fontSize: 80,
-        fontColor: .white,
-        onSettingsPressed: {}
+        fontColor: .white
     )
     .background(Color.black)
 }

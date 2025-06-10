@@ -22,15 +22,32 @@ struct ClockView: View {
             backgroundColor
                 .ignoresSafeArea()
             
-            ClockDisplayView(
-                currentTime: currentTime,
-                selectedFont: selectedFont,
-                fontSize: fontSize,
-                fontColor: fontColor,
-                onSettingsPressed: {
-                    showSettings.toggle()
+            VStack {
+                Spacer()
+                
+                ClockDisplayView(
+                    currentTime: currentTime,
+                    selectedFont: selectedFont,
+                    fontSize: fontSize,
+                    fontColor: fontColor
+                )
+                
+                Spacer()
+            }
+            
+            VStack {
+                Spacer()
+                
+                HStack {
+                    Spacer()
+                    Button("⚙") {
+                        showSettings.toggle()
+                    }
+                    .font(.title2)
+                    .foregroundColor(fontColor.opacity(0.3))
+                    .padding(.bottom, 50)
                 }
-            )
+            }
         }
         .onReceive(timer) { _ in
             currentTime = Date()
