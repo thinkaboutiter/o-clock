@@ -11,7 +11,7 @@ struct ClockView: View {
     @State private var currentTime = Date()
     @State private var showSettings = false
     @State private var selectedFont: ClockFont = .system
-    @State private var fontSize: CGFloat = 80
+    @State private var fontSize: CGFloat = 100
     @State private var backgroundColor: Color = .black
     @State private var fontColor: Color = .white
     

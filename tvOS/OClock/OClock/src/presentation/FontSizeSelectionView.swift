@@ -11,33 +11,41 @@ struct FontSizeSelectionView: View {
     @Binding var fontSize: CGFloat
     @Environment(\.presentationMode) var presentationMode
     
-    let fontSizes: [CGFloat] = [40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120]
-    
+    let fontSizes: [CGFloat] = {
+        var sizes: [CGFloat] = []
+        for i in 100...600 where i % 50 == 0 {
+            sizes.append(CGFloat(i))
+        }
+        return sizes
+    }()
+
     var body: some View {
         NavigationView {
             List {
                 ForEach(fontSizes, id: \.self) { size in
-                    HStack {
-                        Text("\(Int(size)) pt")
-                            .font(.system(size: 20))
-                        
-                        Spacer()
-                        
-                        Text("12:34")
-                            .font(.system(size: size * 0.3, design: .monospaced))
-                            .foregroundColor(.primary)
-                        
-                        if fontSize == size {
-                            Image(systemName: "checkmark")
-                                .foregroundColor(.blue)
-                                .padding(.leading, 10)
-                        }
-                    }
-                    .contentShape(Rectangle())
-                    .onTapGesture {
+                    Button(action: {
                         fontSize = size
                         presentationMode.wrappedValue.dismiss()
+                    }) {
+                        HStack {
+                            Text("\(Int(size)) pt")
+                                .font(.system(size: 20))
+                                .foregroundColor(.primary)
+                            
+                            Spacer()
+                            
+                            Text("12:34")
+                                .font(.system(size: size * 0.3, design: .monospaced))
+                                .foregroundColor(.primary)
+                            
+                            if fontSize == size {
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(.blue)
+                                    .padding(.leading, 10)
+                            }
+                        }
                     }
+                    .buttonStyle(PlainButtonStyle())
                 }
             }
             .navigationTitle("Font Size")
