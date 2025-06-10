@@ -1,79 +1,11 @@
 //
-//  ContentView.swift
+//  SettingsView.swift
 //  OClock
 //
 //  Created by boyan.yankov on 2025-06-10.
 //
 
 import SwiftUI
-
-struct ContentView: View {
-    @State private var currentTime = Date()
-    @State private var showSettings = false
-    @State private var selectedFont: ClockFont = .system
-    @State private var fontSize: CGFloat = 80
-    @State private var backgroundColor: Color = .black
-    @State private var fontColor: Color = .white
-    
-    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    
-    var body: some View {
-        ZStack {
-            backgroundColor
-                .ignoresSafeArea()
-            
-            VStack(spacing: 40) {
-                Text(timeString)
-                    .font(selectedFont.getFont(size: fontSize).weight(.medium))
-                    .foregroundColor(fontColor)
-                    .monospacedDigit()
-                
-                Button("Settings") {
-                    showSettings.toggle()
-                }
-                .foregroundColor(fontColor.opacity(0.7))
-            }
-        }
-        .onReceive(timer) { _ in
-            currentTime = Date()
-        }
-        .sheet(isPresented: $showSettings) {
-            SettingsView(
-                selectedFont: $selectedFont,
-                fontSize: $fontSize,
-                backgroundColor: $backgroundColor,
-                fontColor: $fontColor
-            )
-        }
-    }
-    
-    private var timeString: String {
-        let formatter = DateFormatter()
-        formatter.timeStyle = .medium
-        formatter.dateStyle = .none
-        return formatter.string(from: currentTime)
-    }
-}
-
-enum ClockFont: String, CaseIterable {
-    case system = "System"
-    case monospace = "Monospace"
-    case rounded = "Rounded"
-    case serif = "Serif"
-    
-    func getFont(size: CGFloat) -> Font {
-        switch self {
-        case .system:
-            return .system(size: size)
-        case .monospace:
-            return .system(size: size, design: .monospaced)
-        case .rounded:
-            return .system(size: size, design: .rounded)
-        case .serif:
-            return .system(size: size, design: .serif)
-        }
-    }
-}
 
 struct SettingsView: View {
     @Binding var selectedFont: ClockFont
@@ -179,8 +111,4 @@ struct SettingsView: View {
             )
         }
     }
-}
-
-#Preview {
-    ContentView()
 }
