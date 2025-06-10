@@ -13,6 +13,7 @@ struct SettingsView: View {
     @Binding var backgroundColor: Color
     @Binding var fontColor: Color
     @Environment(\.presentationMode) var presentationMode
+    @State private var showFontSizeSelection = false
     
     let backgroundColors: [Color] = [
         .black, .white, .gray, .blue,
@@ -36,57 +37,53 @@ struct SettingsView: View {
                         }
                     }
                     
-                    HStack {
-                        Text("Font Size: \(Int(fontSize))")
-                        Spacer()
-                        Button("-") {
-                            if fontSize > 40 {
-                                fontSize -= 5
-                            }
+                    NavigationLink(destination: FontSizeSelectionView(fontSize: $fontSize)) {
+                        HStack {
+                            Text("Font Size")
+                            Spacer()
+                            Text("\(Int(fontSize)) pt")
+                                .foregroundColor(.secondary)
                         }
-                        .padding(.horizontal)
-                        Button("+") {
-                            if fontSize < 120 {
-                                fontSize += 5
-                            }
-                        }
-                        .padding(.horizontal)
                     }
                 }
                 
                 Section("Background Color") {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 10) {
-                        ForEach(backgroundColors, id: \.self) { color in
-                            Rectangle()
-                                .fill(color)
-                                .frame(height: 60)
-                                .cornerRadius(8)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .stroke(backgroundColor == color ? Color.white : Color.clear, lineWidth: 3)
-                                )
-                                .onTapGesture {
-                                    backgroundColor = color
-                                }
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            ForEach(backgroundColors, id: \.self) { color in
+                                Circle()
+                                    .fill(color)
+                                    .frame(width: 40, height: 40)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(backgroundColor == color ? Color.white : Color.clear, lineWidth: 3)
+                                    )
+                                    .onTapGesture {
+                                        backgroundColor = color
+                                    }
+                            }
                         }
+                        .padding(.horizontal)
                     }
                 }
                 
                 Section("Font Color") {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 10) {
-                        ForEach(fontColors, id: \.self) { color in
-                            Rectangle()
-                                .fill(color)
-                                .frame(height: 60)
-                                .cornerRadius(8)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .stroke(fontColor == color ? Color.gray : Color.clear, lineWidth: 3)
-                                )
-                                .onTapGesture {
-                                    fontColor = color
-                                }
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            ForEach(fontColors, id: \.self) { color in
+                                Circle()
+                                    .fill(color)
+                                    .frame(width: 40, height: 40)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(fontColor == color ? Color.blue : Color.clear, lineWidth: 3)
+                                    )
+                                    .onTapGesture {
+                                        fontColor = color
+                                    }
+                            }
                         }
+                        .padding(.horizontal)
                     }
                 }
                 
