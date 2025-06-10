@@ -120,8 +120,8 @@ iOSInjectionProject/
 
 ### SwiftPM ###
 Packages
-xcuserdata
-*.xcodeproj
+# xcuserdata
+# *.xcodeproj
 
 
 ### Xcode ###
