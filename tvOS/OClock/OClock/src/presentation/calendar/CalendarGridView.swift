@@ -9,9 +9,13 @@ import SwiftUI
 
 struct CalendarGridView: View {
     @Binding var selectedDate: Date
+    let backgroundColor: Color
+    let fontColor: Color
     
-    init(selectedDate: Binding<Date>) {
+    init(selectedDate: Binding<Date>, backgroundColor: Color, fontColor: Color) {
         self._selectedDate = selectedDate
+        self.backgroundColor = backgroundColor
+        self.fontColor = fontColor
     }
     
     private var calendar = Calendar.current
@@ -21,34 +25,25 @@ struct CalendarGridView: View {
         return formatter
     }
     
-    private var days: [Date] {
+    private var monthDays: [Date?] {
         guard let monthInterval = calendar.dateInterval(of: .month, for: selectedDate) else {
             return []
         }
         
-        let monthFirstWeekday = calendar.component(.weekday, from: monthInterval.start)
-        let daysToShow = monthFirstWeekday - 1
+        let firstDayOfMonth = monthInterval.start
+        let firstWeekday = calendar.component(.weekday, from: firstDayOfMonth)
+        let numberOfDaysInMonth = calendar.component(.day, from: calendar.date(byAdding: DateComponents(month: 1, day: -1), to: firstDayOfMonth)!)
         
-        var days: [Date] = []
+        var days: [Date?] = []
         
-        // Add previous month's trailing days
-        for i in (1...daysToShow).reversed() {
-            if let date = calendar.date(byAdding: .day, value: -i, to: monthInterval.start) {
-                days.append(date)
-            }
+        // Add empty spaces for days before the first day of the month
+        for _ in 1..<firstWeekday {
+            days.append(nil)
         }
         
-        // Add current month's days
-        var currentDate = monthInterval.start
-        while currentDate < monthInterval.end {
-            days.append(currentDate)
-            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? currentDate
-        }
-        
-        // Add next month's leading days to fill the grid
-        let remainingDays = 42 - days.count // 6 rows × 7 days
-        for i in 0..<remainingDays {
-            if let date = calendar.date(byAdding: .day, value: i, to: monthInterval.end) {
+        // Add all days of the current month
+        for day in 1...numberOfDaysInMonth {
+            if let date = calendar.date(byAdding: .day, value: day - 1, to: firstDayOfMonth) {
                 days.append(date)
             }
         }
@@ -62,31 +57,37 @@ struct CalendarGridView: View {
             HStack(spacing: 0) {
                 ForEach(["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], id: \.self) { day in
                     Text(day)
-                        .font(.caption)
+                        .font(.headline)
                         .fontWeight(.semibold)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(fontColor.opacity(0.7))
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
+                        .padding(.vertical, 12)
                 }
             }
             
             // Calendar grid
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 0) {
-                ForEach(days, id: \.self) { date in
-                    let isCurrentMonth = calendar.isDate(date, equalTo: selectedDate, toGranularity: .month)
-                    let isToday = calendar.isDateInToday(date)
-                    
-                    Button(action: {
-                        selectedDate = date
-                    }) {
-                        Text(dateFormatter.string(from: date))
-                            .font(.system(size: 16))
-                            .foregroundColor(isCurrentMonth ? .primary : .secondary)
-                            .frame(width: 40, height: 40)
-                            .background(isToday ? Color.blue.opacity(0.3) : Color.clear)
-                            .cornerRadius(8)
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 12) {
+                ForEach(Array(monthDays.enumerated()), id: \.offset) { index, date in
+                    if let date = date {
+                        let isToday = calendar.isDateInToday(date)
+                        
+                        Button(action: {
+                            selectedDate = date
+                        }) {
+                            Text(dateFormatter.string(from: date))
+                                .font(.system(size: 24))
+                                .fontWeight(isToday ? .bold : .medium)
+                                .foregroundColor(isToday ? backgroundColor : fontColor)
+                                .frame(width: 60, height: 60)
+                                .background(isToday ? fontColor : Color.clear)
+                                .cornerRadius(30)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    } else {
+                        // Empty space for days not in current month
+                        Text("")
+                            .frame(width: 60, height: 60)
                     }
-                    .buttonStyle(PlainButtonStyle())
                 }
             }
         }
@@ -99,7 +100,11 @@ struct CalendarGridView: View {
         @State private var selectedDate = Date()
         
         var body: some View {
-            CalendarGridView(selectedDate: $selectedDate)
+            CalendarGridView(
+                selectedDate: $selectedDate,
+                backgroundColor: .black,
+                fontColor: .white
+            )
         }
     }
     

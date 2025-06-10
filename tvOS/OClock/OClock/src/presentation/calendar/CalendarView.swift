@@ -8,17 +8,23 @@
 import SwiftUI
 
 struct CalendarView: View {
+    let backgroundColor: Color
+    let fontColor: Color
     @Environment(\.presentationMode) var presentationMode
     @State private var selectedDate = Date()
     
     var body: some View {
         NavigationView {
-            VStack {
+            ZStack {
+                backgroundColor
+                    .ignoresSafeArea()
+                
+                VStack {
                 HStack {
                     Button(action: previousMonth) {
                         Image(systemName: "chevron.left")
                             .font(.title2)
-                            .foregroundColor(.blue)
+                            .foregroundColor(fontColor)
                     }
                     
                     Spacer()
@@ -27,11 +33,12 @@ struct CalendarView: View {
                         Text(monthYearString(from: selectedDate))
                             .font(.title2)
                             .fontWeight(.semibold)
+                            .foregroundColor(fontColor)
                         
                         Button(action: showYearPicker) {
                             Text("Change Year")
                                 .font(.caption)
-                                .foregroundColor(.blue)
+                                .foregroundColor(fontColor.opacity(0.7))
                         }
                     }
                     
@@ -40,7 +47,7 @@ struct CalendarView: View {
                     Button(action: nextMonth) {
                         Image(systemName: "chevron.right")
                             .font(.title2)
-                            .foregroundColor(.blue)
+                            .foregroundColor(fontColor)
                     }
                 }
                 .padding(.horizontal)
@@ -48,7 +55,11 @@ struct CalendarView: View {
                 
                 Spacer()
                 
-                CalendarGridView(selectedDate: $selectedDate)
+                CalendarGridView(
+                    selectedDate: $selectedDate,
+                    backgroundColor: backgroundColor,
+                    fontColor: fontColor
+                )
                 
                 Spacer()
                 
@@ -56,17 +67,18 @@ struct CalendarView: View {
                     Button("Today") {
                         selectedDate = Date()
                     }
-                    .foregroundColor(.blue)
+                    .foregroundColor(fontColor)
                     
                     Spacer()
                     
                     Button("Done") {
                         presentationMode.wrappedValue.dismiss()
                     }
-                    .foregroundColor(.blue)
+                    .foregroundColor(fontColor)
                 }
                 .padding(.horizontal)
                 .padding(.bottom)
+                }
             }
             .navigationTitle("Calendar")
             .navigationBarHidden(true)
@@ -95,5 +107,8 @@ struct CalendarView: View {
 }
 
 #Preview {
-    CalendarView()
+    CalendarView(
+        backgroundColor: .black,
+        fontColor: .white
+    )
 }

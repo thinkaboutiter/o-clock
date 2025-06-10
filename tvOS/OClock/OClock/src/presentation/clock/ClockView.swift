@@ -91,7 +91,10 @@ struct ClockView: View {
             )
         }
         .sheet(isPresented: $showCalendar) {
-            CalendarView()
+            CalendarView(
+                backgroundColor: backgroundColor,
+                fontColor: fontColor
+            )
         }
     }
     
