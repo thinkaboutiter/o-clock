@@ -24,8 +24,7 @@ struct ContentView: View {
             
             VStack(spacing: 40) {
                 Text(timeString)
-                    .font(selectedFont.font.weight(.medium))
-                    .fontSize(fontSize)
+                    .font(selectedFont.getFont(size: fontSize).weight(.medium))
                     .foregroundColor(fontColor)
                     .monospacedDigit()
                 
@@ -62,23 +61,17 @@ enum ClockFont: String, CaseIterable {
     case rounded = "Rounded"
     case serif = "Serif"
     
-    var font: Font {
+    func getFont(size: CGFloat) -> Font {
         switch self {
         case .system:
-            return .system(size: 80)
+            return .system(size: size)
         case .monospace:
-            return .system(size: 80, design: .monospaced)
+            return .system(size: size, design: .monospaced)
         case .rounded:
-            return .system(size: 80, design: .rounded)
+            return .system(size: size, design: .rounded)
         case .serif:
-            return .system(size: 80, design: .serif)
+            return .system(size: size, design: .serif)
         }
-    }
-}
-
-extension Font {
-    func fontSize(_ size: CGFloat) -> Font {
-        return .system(size: size)
     }
 }
 
@@ -87,7 +80,19 @@ struct SettingsView: View {
     @Binding var fontSize: CGFloat
     @Binding var backgroundColor: Color
     @Binding var fontColor: Color
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.presentationMode) var presentationMode
+    
+    let backgroundColors: [Color] = [
+        .black, .white, .gray, .blue,
+        .red, .green, .orange, .purple,
+        .yellow, .pink, .indigo, .mint
+    ]
+    
+    let fontColors: [Color] = [
+        .white, .black, .gray, .blue,
+        .red, .green, .orange, .purple,
+        .yellow, .pink, .indigo, .mint
+    ]
     
     var body: some View {
         NavigationView {
@@ -99,23 +104,65 @@ struct SettingsView: View {
                         }
                     }
                     
-                    VStack {
+                    HStack {
                         Text("Font Size: \(Int(fontSize))")
-                        Slider(value: $fontSize, in: 40...120, step: 5)
+                        Spacer()
+                        Button("-") {
+                            if fontSize > 40 {
+                                fontSize -= 5
+                            }
+                        }
+                        .padding(.horizontal)
+                        Button("+") {
+                            if fontSize < 120 {
+                                fontSize += 5
+                            }
+                        }
+                        .padding(.horizontal)
                     }
                 }
                 
-                Section("Colors") {
-                    ColorPicker("Background Color", selection: $backgroundColor)
-                    ColorPicker("Font Color", selection: $fontColor)
+                Section("Background Color") {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 10) {
+                        ForEach(backgroundColors, id: \.self) { color in
+                            Rectangle()
+                                .fill(color)
+                                .frame(height: 60)
+                                .cornerRadius(8)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(backgroundColor == color ? Color.white : Color.clear, lineWidth: 3)
+                                )
+                                .onTapGesture {
+                                    backgroundColor = color
+                                }
+                        }
+                    }
+                }
+                
+                Section("Font Color") {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 10) {
+                        ForEach(fontColors, id: \.self) { color in
+                            Rectangle()
+                                .fill(color)
+                                .frame(height: 60)
+                                .cornerRadius(8)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(fontColor == color ? Color.gray : Color.clear, lineWidth: 3)
+                                )
+                                .onTapGesture {
+                                    fontColor = color
+                                }
+                        }
+                    }
                 }
                 
                 Section("Preview") {
                     HStack {
                         Spacer()
                         Text("12:34:56")
-                            .font(selectedFont.font.weight(.medium))
-                            .fontSize(fontSize * 0.3)
+                            .font(selectedFont.getFont(size: fontSize * 0.3).weight(.medium))
                             .foregroundColor(fontColor)
                             .padding()
                             .background(backgroundColor)
@@ -125,14 +172,11 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Clock Settings")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        dismiss()
-                    }
+            .navigationBarItems(trailing: 
+                Button("Done") {
+                    presentationMode.wrappedValue.dismiss()
                 }
-            }
+            )
         }
     }
 }
