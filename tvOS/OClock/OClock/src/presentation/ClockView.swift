@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct ClockView: View {
     @State private var currentTime = Date()
@@ -51,6 +52,12 @@ struct ClockView: View {
         }
         .onReceive(timer) { _ in
             currentTime = Date()
+        }
+        .onAppear {
+            UIApplication.shared.isIdleTimerDisabled = true
+        }
+        .onDisappear {
+            UIApplication.shared.isIdleTimerDisabled = false
         }
         .sheet(isPresented: $showSettings) {
             SettingsView(
