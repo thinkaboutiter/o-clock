@@ -9,8 +9,9 @@ import SwiftUI
 
 struct SettingsView: View {
     @Binding var selectedFont: ClockFont
-    @Binding var fontSize: CGFloat
+    @Binding var clockFontSize: CGFloat
     @Binding var dateFontSize: CGFloat
+    @Binding var showDate: Bool
     @Binding var backgroundColor: Color
     @Binding var fontColor: Color
     @Environment(\.presentationMode) var presentationMode
@@ -38,21 +39,28 @@ struct SettingsView: View {
                         }
                     }
                     
-                    NavigationLink(destination: FontSizeSelectionView(fontSize: $fontSize)) {
+                    NavigationLink(destination: ClockFontSizeSelectionView(fontSize: $clockFontSize)) {
                         HStack {
                             Text("Time Font Size")
                             Spacer()
-                            Text("\(Int(fontSize)) pt")
+                            Text("\(Int(clockFontSize)) pt")
                                 .foregroundColor(.secondary)
                         }
                     }
                     
-                    NavigationLink(destination: FontSizeSelectionView(fontSize: $dateFontSize)) {
-                        HStack {
-                            Text("Date Font Size")
-                            Spacer()
-                            Text("\(Int(dateFontSize)) pt")
-                                .foregroundColor(.secondary)
+                }
+                
+                Section("Date Display") {
+                    Toggle("Show Date", isOn: $showDate)
+                    
+                    if showDate {
+                        NavigationLink(destination: DateFontSizeSelectionView(fontSize: $dateFontSize)) {
+                            HStack {
+                                Text("Date Font Size")
+                                Spacer()
+                                Text("\(Int(dateFontSize)) pt")
+                                    .foregroundColor(.secondary)
+                            }
                         }
                     }
                 }
@@ -101,7 +109,7 @@ struct SettingsView: View {
                     HStack {
                         Spacer()
                         Text("12:34:56")
-                            .font(selectedFont.getFont(size: fontSize * 0.3).weight(.medium))
+                            .font(selectedFont.getFont(size: clockFontSize * 0.3).weight(.medium))
                             .foregroundColor(fontColor)
                             .padding()
                             .background(backgroundColor)
@@ -124,13 +132,15 @@ struct SettingsView: View {
     @Previewable @State var selectedFont: ClockFont = .system
     @Previewable @State var fontSize: CGFloat = 80
     @Previewable @State var dateFontSize: CGFloat = 40
+    @Previewable @State var showDate: Bool = true
     @Previewable @State var backgroundColor: Color = .black
     @Previewable @State var fontColor: Color = .white
     
     SettingsView(
         selectedFont: $selectedFont,
-        fontSize: $fontSize,
+        clockFontSize: $fontSize,
         dateFontSize: $dateFontSize,
+        showDate: $showDate,
         backgroundColor: $backgroundColor,
         fontColor: $fontColor
     )

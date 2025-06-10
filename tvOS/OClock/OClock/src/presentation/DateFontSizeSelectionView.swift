@@ -1,5 +1,5 @@
 //
-//  FontSizeSelectionView.swift
+//  DateFontSizeSelectionView.swift
 //  OClock
 //
 //  Created by boyan.yankov on 2025-06-10.
@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-struct ClockFontSizeSelectionView: View {
+struct DateFontSizeSelectionView: View {
     @Binding var fontSize: CGFloat
     @Environment(\.presentationMode) var presentationMode
     
     let fontSizes: [CGFloat] = {
         var sizes: [CGFloat] = []
-        for i in 120...360 where i % 30 == 0 {
+        for i in 20...80 where i % 10 == 0 {
             sizes.append(CGFloat(i))
         }
         return sizes
@@ -34,8 +34,8 @@ struct ClockFontSizeSelectionView: View {
                             
                             Spacer()
                             
-                            Text("12:34")
-                                .font(.system(size: size * 0.3, design: .monospaced))
+                            Text("2025 June 10")
+                                .font(.system(size: size, design: .default))
                                 .foregroundColor(.primary)
                             
                             if fontSize == size {
@@ -48,7 +48,7 @@ struct ClockFontSizeSelectionView: View {
                     .buttonStyle(PlainButtonStyle())
                 }
             }
-            .navigationTitle("Clock Font Size")
+            .navigationTitle("Date Font Size")
             .navigationBarItems(trailing:
                 Button("Done") {
                     presentationMode.wrappedValue.dismiss()
@@ -59,7 +59,7 @@ struct ClockFontSizeSelectionView: View {
 }
 
 #Preview {
-    @Previewable @State var fontSize: CGFloat = 80
+    @Previewable @State var fontSize: CGFloat = 40
     
-    ClockFontSizeSelectionView(fontSize: $fontSize)
+    DateFontSizeSelectionView(fontSize: $fontSize)
 }

@@ -13,8 +13,9 @@ struct ClockView: View {
     @State private var currentTime = Date()
     @State private var showSettings = false
     @State private var selectedFont: ClockFont = .system
-    @State private var fontSize: CGFloat = 180
+    @State private var clockFontSize: CGFloat = 180
     @State private var dateFontSize: CGFloat = 40
+    @State private var showDate: Bool = true
     @State private var backgroundColor: Color = .black
     @State private var fontColor: Color = .white
     
@@ -31,7 +32,7 @@ struct ClockView: View {
                 ClockDisplayView(
                     currentTime: currentTime,
                     selectedFont: selectedFont,
-                    fontSize: fontSize,
+                    fontSize: clockFontSize,
                     fontColor: fontColor
                 )
                 
@@ -53,12 +54,14 @@ struct ClockView: View {
                 }
             }
 
-            VStack {
-                Spacer()
-                Text(formatDate(currentTime))
-                    .font(selectedFont.getFont(size: dateFontSize).weight(.regular))
-                    .foregroundColor(fontColor)
-                    .padding(.bottom, 50)
+            if showDate {
+                VStack {
+                    Spacer()
+                    Text(formatDate(currentTime))
+                        .font(selectedFont.getFont(size: dateFontSize).weight(.regular))
+                        .foregroundColor(fontColor)
+                        .padding(.bottom, 50)
+                }
             }
         }
         .onReceive(timer) { _ in
@@ -73,8 +76,9 @@ struct ClockView: View {
         .sheet(isPresented: $showSettings) {
             SettingsView(
                 selectedFont: $selectedFont,
-                fontSize: $fontSize,
+                clockFontSize: $clockFontSize,
                 dateFontSize: $dateFontSize,
+                showDate: $showDate,
                 backgroundColor: $backgroundColor,
                 fontColor: $fontColor
             )
