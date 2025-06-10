@@ -34,12 +34,6 @@ struct CalendarView: View {
                             .font(.title2)
                             .fontWeight(.semibold)
                             .foregroundColor(fontColor)
-                        
-                        Button(action: showYearPicker) {
-                            Text("Change Year")
-                                .font(.caption)
-                                .foregroundColor(fontColor.opacity(0.7))
-                        }
                     }
                     
                     Spacer()
@@ -91,12 +85,6 @@ struct CalendarView: View {
     
     private func nextMonth() {
         selectedDate = Calendar.current.date(byAdding: .month, value: 1, to: selectedDate) ?? selectedDate
-    }
-    
-    private func showYearPicker() {
-        // This could be expanded to show a year picker
-        // For now, we'll just jump to current year
-        selectedDate = Date()
     }
     
     private func monthYearString(from date: Date) -> String {
