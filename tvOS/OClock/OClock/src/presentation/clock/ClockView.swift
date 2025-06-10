@@ -16,6 +16,7 @@ struct ClockView: View {
     @State private var clockFontSize: CGFloat = 180
     @State private var dateFontSize: CGFloat = 40
     @State private var showDate: Bool = true
+    @State private var showCalendar = false
     @State private var backgroundColor: Color = .black
     @State private var fontColor: Color = .white
     
@@ -57,10 +58,16 @@ struct ClockView: View {
             if showDate {
                 VStack {
                     Spacer()
-                    Text(formatDate(currentTime))
-                        .font(selectedFont.getFont(size: dateFontSize).weight(.regular))
-                        .foregroundColor(fontColor)
-                        .padding(.bottom, 50)
+                    DateDisplayView(
+                        currentTime: currentTime,
+                        selectedFont: selectedFont,
+                        dateFontSize: dateFontSize,
+                        fontColor: fontColor,
+                        onTap: {
+                            showCalendar.toggle()
+                        }
+                    )
+                    .padding(.bottom, 50)
                 }
             }
         }
@@ -83,13 +90,11 @@ struct ClockView: View {
                 fontColor: $fontColor
             )
         }
+        .sheet(isPresented: $showCalendar) {
+            CalendarView()
+        }
     }
     
-    private func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy MMMM dd"
-        return formatter.string(from: date)
-    }
 }
 
 #Preview {
